@@ -9,6 +9,9 @@
  */
 class ClosureTableBehavior extends CActiveRecordBehavior
 {
+    const SortToRoot = 1;
+    const SortFromRoot = 2;
+
     public $closureTableName;
     public $childAttribute = 'child';
     public $parentAttribute = 'parent';
@@ -39,10 +42,6 @@ class ClosureTableBehavior extends CActiveRecordBehavior
         ));
         return $owner;
     }
-
-
-    const SortToRoot=1;
-    const SortFromRoot=2;
     
     /**
      * Finds descendants
