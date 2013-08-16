@@ -41,6 +41,9 @@ class ClosureTableBehavior extends CActiveRecordBehavior
     }
 
 
+    const SortToRoot=1;
+    const SortFromRoot=2;
+    
     /**
      * Finds descendants
      * @param int|string $primaryKey.
@@ -194,9 +197,10 @@ class ClosureTableBehavior extends CActiveRecordBehavior
     /**
      * Named scope. Gets path to the node.
      * @param int|string $primaryKey primary key
+     * @param int $sortDir sort direction. Default: SortFromRoot
      * @return CActiveRecord the owner.
      */
-    public function pathOf($primaryKey)
+    public function pathOf($primaryKey,$sortDir=self::SortFromRoot)
     {
         /* @var $owner CActiveRecord */
         $owner = $this->getOwner();
@@ -205,8 +209,9 @@ class ClosureTableBehavior extends CActiveRecordBehavior
         $criteria = $owner->getDbCriteria();
         $closureTableAlias = $db->quoteTableName('ctp');
         $depthAttribute = $db->quoteColumnName($this->depthAttribute);
+        $direction=$sortDir==self::SortFromRoot?' DESC':' ASC';
         $criteria->mergeWith(array(
-            'order' => $closureTableAlias . '.' . $depthAttribute . ' DESC'
+            'order' => $closureTableAlias . '.' . $depthAttribute . $direction
         ));
         return $owner;
     }
@@ -214,12 +219,13 @@ class ClosureTableBehavior extends CActiveRecordBehavior
     /**
      * Named scope. Gets path to the node.
      * @return CActiveRecord the owner.
+     * @param int $sortDir sort direction. Default: SortFromRoot
      */
-    public function path()
+    public function path($sortDir=  self::SortFromRoot)
     {
         /* @var $owner CActiveRecord */
         $owner = $this->getOwner();
-        return $this->pathOf($owner->getPrimaryKey());
+        return $this->pathOf($owner->getPrimaryKey(),$sortDir);
     }
 
     /**
